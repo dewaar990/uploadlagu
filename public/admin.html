@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#07060d">
+  <title>Admin — DeeRiZ Corp Studios</title>
+  <link rel="icon" href="/img/logo.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Audiowide&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header class="nav">
+    <a class="brand" href="/">
+      <span class="brand-logo">DRZ<small>STUDIOS</small></span>
+      <span class="brand-name">DeeRiZ Corp<span>STUDIOS</span></span>
+    </a>
+    <div class="lang"><button data-lang="id">ID</button><button data-lang="en">EN</button></div>
+    <div class="user-chip">
+      <a class="btn btn-ghost btn-sm" href="/app" data-i18n="nav.dashboard">Dashboard</a>
+      <button class="btn btn-ghost btn-sm" data-action="logout" data-i18n="nav.logout">Keluar</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <h1 class="page-title" data-i18n="admin.title">Kelola Pelanggan</h1>
+    <p class="page-sub" data-i18n="admin.sub"></p>
+
+    <form class="card" id="createForm" autocomplete="off">
+      <h2 data-i18n="admin.new">Buat Pelanggan Baru</h2>
+      <div class="grid-2" style="margin-top:16px">
+        <div class="field"><label for="cId" data-i18n="admin.id"></label><input class="input" id="cId" maxlength="32" placeholder="DRZ-123456"></div>
+        <div class="field"><label for="cName" data-i18n="admin.name"></label><input class="input" id="cName" maxlength="80"></div>
+        <div class="field"><label for="cPass" data-i18n="admin.password"></label><input class="input" id="cPass" type="text" autocomplete="new-password"></div>
+        <div class="field"><label for="cExp" data-i18n="admin.expires"></label><input class="input" id="cExp" type="date"></div>
+      </div>
+      <label class="checkbox" style="margin:4px 0 18px"><input type="checkbox" id="cServerKey" checked><span data-i18n="admin.useServerKey"></span></label>
+      <button class="btn btn-primary" type="submit" data-i18n="admin.create">Buat Akun</button>
+    </form>
+
+    <div class="card">
+      <h2 data-i18n="admin.list">Daftar Pelanggan</h2>
+      <div class="table-wrap" style="margin-top:12px">
+        <table>
+          <thead><tr>
+            <th data-i18n="col.id"></th><th data-i18n="col.name"></th><th data-i18n="col.status"></th>
+            <th data-i18n="col.expires"></th><th data-i18n="col.last"></th><th data-i18n="col.actions"></th>
+          </tr></thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <div class="modal" id="credModal" hidden>
+    <div class="card">
+      <h2 id="credTitle" data-i18n="admin.created">Akun berhasil dibuat</h2>
+      <div class="cred" id="credText"></div>
+      <p class="small" data-i18n="admin.copyNote"></p>
+      <div class="row" style="margin-top:14px">
+        <button class="btn btn-primary" id="credCopy" data-i18n="admin.copy">Salin</button>
+        <button class="btn btn-ghost" id="credClose" data-i18n="admin.close">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/common.js"></script>
+  <script src="/js/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#07060d">
+  <title>Masuk — DeeRiZ Corp Studios</title>
+  <link rel="icon" href="/img/logo.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Audiowide&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header class="nav">
+    <a class="brand" href="/">
+      <span class="brand-logo">DRZ<small>STUDIOS</small></span>
+      <span class="brand-name">DeeRiZ Corp<span>STUDIOS</span></span>
+    </a>
+    <div class="lang"><button data-lang="id">ID</button><button data-lang="en">EN</button></div>
+  </header>
+
+  <main class="auth-wrap">
+    <form class="card auth-card" id="loginForm" autocomplete="on">
+      <h1 class="glow-title" data-i18n="login.title">Masuk</h1>
+      <p class="hint" style="text-align:center" data-i18n="login.sub"></p>
+      <div class="notice err" id="loginError" hidden></div>
+      <div class="field">
+        <label for="custId" data-i18n="login.id">ID Pelanggan</label>
+        <input class="input" id="custId" name="username" autocomplete="username" required autofocus>
+      </div>
+      <div class="field">
+        <label for="password" data-i18n="login.password">Password</label>
+        <input class="input" id="password" name="password" type="password" autocomplete="current-password" required>
+      </div>
+      <button class="btn btn-primary" style="width:100%;margin-top:6px" type="submit" data-i18n="login.submit">Masuk</button>
+      <p class="small" style="text-align:center;margin:18px 0 0" data-i18n="login.note"></p>
+    </form>
+  </main>
+
+  <script src="/js/common.js"></script>
+  <script>
+    const form = document.getElementById('loginForm');
+    const errBox = document.getElementById('loginError');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      errBox.hidden = true;
+      const btn = form.querySelector('button[type=submit]');
+      btn.disabled = true;
+      try {
+        const r = await api('/api/auth/login', { method: 'POST', body: { id: form.username.value, password: form.password.value } });
+        location.href = r.redirect;
+      } catch (err) {
+        errBox.textContent = err.message;
+        errBox.hidden = false;
+        btn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>

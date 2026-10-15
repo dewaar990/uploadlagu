@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#07060d">
+  <title>Dashboard — DeeRiZ Corp Studios</title>
+  <link rel="icon" href="/img/logo.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Audiowide&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header class="nav">
+    <a class="brand" href="/">
+      <span class="brand-logo">DRZ<small>STUDIOS</small></span>
+      <span class="brand-name">DeeRiZ Corp<span>STUDIOS</span></span>
+    </a>
+    <div class="lang"><button data-lang="id">ID</button><button data-lang="en">EN</button></div>
+    <div class="user-chip">
+      <span class="who"><b id="userName">…</b></span>
+      <a class="btn btn-ghost btn-sm" id="adminLink" href="/admin" hidden data-i18n="nav.admin">Admin</a>
+      <button class="btn btn-ghost btn-sm" data-action="logout" data-i18n="nav.logout">Keluar</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <h1 class="page-title" data-i18n="app.title">Upload Lagu</h1>
+    <p class="page-sub" data-i18n="app.sub"></p>
+
+    <nav class="tabs" role="tablist">
+      <button data-tab="upload" class="active" data-i18n="tab.upload">Upload</button>
+      <button data-tab="history"><span data-i18n="tab.history">Riwayat</span><span class="count" id="activeCount" hidden></span></button>
+      <button data-tab="settings" data-i18n="tab.settings">Pengaturan Roblox</button>
+    </nav>
+
+    <!-- ===================== UPLOAD ===================== -->
+    <section data-panel="upload">
+      <div class="notice err" id="needSettings" hidden data-i18n="up.needSettings"></div>
+      <form class="card" id="uploadForm">
+        <label class="dropzone" id="dropzone">
+          <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+          <div class="big" data-i18n="up.drop">Tarik &amp; lepas lagu di sini</div>
+          <div class="small" data-i18n="up.or"></div>
+          <input type="file" id="fileInput" accept="audio/*,.mp3,.wav,.ogg,.flac,.m4a,.aac,.opus,.webm,.mp4" multiple hidden>
+        </label>
+        <ul class="file-list" id="fileList"></ul>
+
+        <div class="grid-2" style="margin-top:22px">
+          <div>
+            <div class="label" style="margin-bottom:6px" data-i18n="up.mode">Mode kecepatan</div>
+            <div class="segmented">
+              <label><input type="radio" name="speedMode" value="speed" checked><span class="opt"><b data-i18n="up.mode.speed"></b><span data-i18n="up.mode.speed.d"></span></span></label>
+              <label><input type="radio" name="speedMode" value="tempo"><span class="opt"><b data-i18n="up.mode.tempo"></b><span data-i18n="up.mode.tempo.d"></span></span></label>
+            </div>
+          </div>
+          <div>
+            <div class="field">
+              <label for="factor"><span data-i18n="up.factor">Kecepatan</span>: <b id="factorVal" style="color:var(--accent)">2x</b></label>
+              <input type="range" id="factor" name="factor" min="1" max="3" step="0.25" value="2">
+            </div>
+            <div class="field">
+              <label for="gainDb"><span data-i18n="up.gain">Volume</span>: <b id="gainVal" style="color:var(--accent)">0 dB</b></label>
+              <input type="range" id="gainDb" name="gainDb" min="-10" max="10" step="1" value="0">
+            </div>
+          </div>
+        </div>
+        <button class="btn btn-primary btn-lg" style="width:100%;margin-top:8px" type="submit" id="uploadBtn" disabled data-i18n="up.submit">Proses &amp; Upload ke Roblox</button>
+      </form>
+    </section>
+
+    <!-- ===================== RIWAYAT ===================== -->
+    <section data-panel="history" hidden>
+      <div class="card">
+        <h2 data-i18n="hist.title">Riwayat Upload</h2>
+        <div class="jobs" id="jobs" style="margin-top:16px"></div>
+      </div>
+    </section>
+
+    <!-- ===================== PENGATURAN ===================== -->
+    <section data-panel="settings" hidden>
+      <form class="card" id="settingsForm" autocomplete="off">
+        <h2 data-i18n="set.title">Pengaturan Roblox Open Cloud</h2>
+        <p class="hint"><span data-i18n="set.hint"></span> Scope: <code>asset:read</code>, <code>asset:write</code>, <code>universe-datastores.objects:read/create/update</code>.</p>
+        <div class="notice" id="serverNote" hidden></div>
+        <div id="testResult"></div>
+
+        <div class="field">
+          <label for="apiKey" data-i18n="set.apiKey">API Key</label>
+          <div class="row" style="flex-wrap:nowrap">
+            <input class="input" id="apiKey" type="password" autocomplete="new-password" spellcheck="false">
+            <button class="btn btn-danger btn-sm" type="button" id="clearApiKey" hidden data-i18n="set.clear">Hapus key</button>
+          </div>
+        </div>
+        <div class="field">
+          <label for="datastoreApiKey" data-i18n="set.dsKey">API Key khusus DataStore (opsional)</label>
+          <div class="row" style="flex-wrap:nowrap">
+            <input class="input" id="datastoreApiKey" type="password" autocomplete="new-password" spellcheck="false">
+            <button class="btn btn-danger btn-sm" type="button" id="clearDsKey" hidden data-i18n="set.clear">Hapus key</button>
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="field">
+            <label for="creatorType" data-i18n="set.creatorType">Upload sebagai</label>
+            <select class="input" id="creatorType">
+              <option value="" id="creatorTypeDefault">—</option>
+              <option value="user" data-i18n="set.user">User</option>
+              <option value="group" data-i18n="set.group">Grup</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="creatorId" data-i18n="set.creatorId">User ID / Group ID</label>
+            <input class="input" id="creatorId" inputmode="numeric">
+          </div>
+        </div>
+        <div class="field">
+          <label for="universeId" data-i18n="set.universeId">Universe ID (game)</label>
+          <input class="input" id="universeId" inputmode="numeric">
+        </div>
+
+        <div class="label" style="margin:6px 0 8px" data-i18n="set.ds">DataStore tujuan</div>
+        <dl class="kv card" style="background:var(--bg-2);margin-bottom:18px" id="dsInfo"></dl>
+
+        <div class="row">
+          <button class="btn btn-primary" type="submit" data-i18n="set.save">Simpan</button>
+          <button class="btn btn-ghost" type="button" id="testBtn" data-i18n="set.test">Tes Koneksi</button>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <script src="/js/common.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+</html>

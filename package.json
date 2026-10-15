@@ -1,0 +1,31 @@
+{
+  "name": "uploadlagu",
+  "version": "1.0.0",
+  "description": "Web untuk upload lagu ke Roblox (speed 2x), cek moderasi, lalu simpan SoundId ke DataStore lewat Open Cloud API key",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "test": "node --test test/*.test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dewaar990/uploadlagu.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dewaar990/uploadlagu/issues"
+  },
+  "homepage": "https://github.com/dewaar990/uploadlagu#readme",
+  "dependencies": {
+    "dotenv": "^16.6.1",
+    "express": "^4.22.3",
+    "multer": "^2.4.0"
+  },
+  "engines": {
+    "node": ">=18.17"
+  },
+  "private": true
+}
