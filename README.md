@@ -82,7 +82,7 @@ Nama DataStore: `songiddeerizcorp` (ubah lewat `DATASTORE_NAME`).
   ```
 - **`DATASTORE_MODE=per-id`** — setiap SoundId menjadi key sendiri dengan isi objek yang sama.
 
-Contoh script Roblox untuk membaca daftar lagu: [`roblox/SongLoader.server.lua`](roblox/SongLoader.server.lua).
+Sistem musik siap pakai untuk Roblox Studio (deteksi otomatis lagu dari DataStore, UI pemutar, radio server): [`roblox/MusicSystem`](roblox/MusicSystem/README.md).
 
 ## Alur status
 
