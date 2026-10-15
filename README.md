@@ -47,6 +47,7 @@ Repo ini sudah berisi `Dockerfile` (Node 22 + ffmpeg) dan `railway.json` (build 
    | `ADMIN_PASSWORD` | password admin yang kuat |
    | `SESSION_SECRET` | teks acak panjang (mis. hasil `openssl rand -hex 32`) |
    | `ROBLOX_API_KEY`, `ROBLOX_CREATOR_TYPE`, `ROBLOX_CREATOR_ID`, `ROBLOX_UNIVERSE_ID` | opsional, default Roblox |
+   | `DISCORD_USERNAME` / `DISCORD_URL` | opsional, kontak pembelian (default `deerizinhere`) |
 
    `PORT`, `DATA_DIR=/data`, `TRUST_PROXY=true`, `COOKIE_SECURE=true` sudah diatur otomatis.
 4. **Settings → Networking → Generate Domain**, lalu klik ikon edit pada domain dan ganti menjadi `deerizcorpstudios` → `https://deerizcorpstudios.up.railway.app`.

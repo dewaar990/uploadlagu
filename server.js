@@ -24,6 +24,7 @@ const page = (name) => path.join(PUBLIC, name);
 const wrap = (fn) => (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next);
 
 app.get('/healthz', (req, res) => res.json({ ok: true }));
+app.get('/api/public-config', (req, res) => res.json(config.contact));
 
 // ------------------------------------------------------------------ halaman
 app.get('/', (req, res) => res.sendFile(page('index.html')));

@@ -17,6 +17,12 @@ module.exports = {
   sessionSecret: process.env.SESSION_SECRET || '',
   sessionDays: num('SESSION_DAYS', 7),
 
+  contact: {
+    discordUsername: (process.env.DISCORD_USERNAME || 'deerizinhere').replace(/^@/, ''),
+    // Opsional: link undangan server / profil, mis. https://discord.gg/xxxx atau https://discord.com/users/<id>
+    discordUrl: process.env.DISCORD_URL || '',
+  },
+
   admin: {
     id: process.env.ADMIN_ID || 'admin',
     password: process.env.ADMIN_PASSWORD || '',
