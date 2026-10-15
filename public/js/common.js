@@ -193,6 +193,15 @@ async function logout() {
   location.href = '/login';
 }
 
+// Liquid glass: pantulan cahaya pada tombol mengikuti posisi kursor/jari
+document.addEventListener('pointermove', (e) => {
+  const btn = e.target.closest?.('.btn');
+  if (!btn) return;
+  const r = btn.getBoundingClientRect();
+  btn.style.setProperty('--mx', `${e.clientX - r.left}px`);
+  btn.style.setProperty('--my', `${e.clientY - r.top}px`);
+}, { passive: true });
+
 document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.lang button').forEach((b) => b.addEventListener('click', () => setLang(b.dataset.lang)));
   document.querySelectorAll('[data-action=logout]').forEach((b) => b.addEventListener('click', logout));
