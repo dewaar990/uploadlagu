@@ -49,7 +49,7 @@ Repo ini sudah berisi `Dockerfile` (Node 22 + ffmpeg) dan `railway.json` (build 
    | `ROBLOX_API_KEY`, `ROBLOX_CREATOR_TYPE`, `ROBLOX_CREATOR_ID`, `ROBLOX_UNIVERSE_ID` | opsional, default Roblox |
 
    `PORT`, `DATA_DIR=/data`, `TRUST_PROXY=true`, `COOKIE_SECURE=true` sudah diatur otomatis.
-4. **Settings → Networking → Generate Domain** untuk mendapat URL publik, mis. `https://uploadlagu-production.up.railway.app`.
+4. **Settings → Networking → Generate Domain**, lalu klik ikon edit pada domain dan ganti menjadi `deerizcorpstudios` → `https://deerizcorpstudios.up.railway.app`.
 5. Buka `https://<domain>/login` dan masuk dengan `ADMIN_ID` / `ADMIN_PASSWORD`.
 
 > IP keluar Railway bisa berubah-ubah, jadi di API key Roblox isi *Accepted IP Addresses* dengan `0.0.0.0/0`.
