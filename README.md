@@ -32,6 +32,28 @@ npm start                # http://localhost:3000
 Masuk ke `/login` dengan `ADMIN_ID` / `ADMIN_PASSWORD`, lalu buat akun pelanggan di `/admin`.
 Password pelanggan hanya ditampilkan sekali saat dibuat/di-reset — salin dan kirimkan ke pelanggan.
 
+## Deploy ke Railway
+
+Repo ini sudah berisi `Dockerfile` (Node 22 + ffmpeg) dan `railway.json` (build Docker + health check `/healthz`).
+
+1. Buka <https://railway.com> → **New Project** → **Deploy from GitHub repo** → pilih `uploadlagu`
+   (di **Settings → Source**, pilih branch yang berisi kode ini).
+2. **Tambahkan Volume** (klik kanan service → *Attach Volume*) dengan mount path **`/data`**.
+   Wajib: tanpa volume, akun pelanggan & riwayat hilang setiap kali deploy ulang.
+3. Di tab **Variables**, isi minimal:
+   | Variable | Nilai |
+   |----------|-------|
+   | `ADMIN_ID` | ID admin kamu, mis. `admin` |
+   | `ADMIN_PASSWORD` | password admin yang kuat |
+   | `SESSION_SECRET` | teks acak panjang (mis. hasil `openssl rand -hex 32`) |
+   | `ROBLOX_API_KEY`, `ROBLOX_CREATOR_TYPE`, `ROBLOX_CREATOR_ID`, `ROBLOX_UNIVERSE_ID` | opsional, default Roblox |
+
+   `PORT`, `DATA_DIR=/data`, `TRUST_PROXY=true`, `COOKIE_SECURE=true` sudah diatur otomatis.
+4. **Settings → Networking → Generate Domain** untuk mendapat URL publik, mis. `https://uploadlagu-production.up.railway.app`.
+5. Buka `https://<domain>/login` dan masuk dengan `ADMIN_ID` / `ADMIN_PASSWORD`.
+
+> IP keluar Railway bisa berubah-ubah, jadi di API key Roblox isi *Accepted IP Addresses* dengan `0.0.0.0/0`.
+
 ## Menyiapkan API key Roblox
 
 1. Buka <https://create.roblox.com/dashboard/credentials> → **Create API Key**.

@@ -23,6 +23,8 @@ const PUBLIC = path.join(__dirname, 'public');
 const page = (name) => path.join(PUBLIC, name);
 const wrap = (fn) => (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next);
 
+app.get('/healthz', (req, res) => res.json({ ok: true }));
+
 // ------------------------------------------------------------------ halaman
 app.get('/', (req, res) => res.sendFile(page('index.html')));
 app.get('/login', (req, res) => {
