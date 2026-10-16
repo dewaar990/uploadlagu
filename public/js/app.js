@@ -52,6 +52,13 @@ function renderFiles() {
   $('#uploadBtn').disabled = !selected.length;
 }
 
+// Mode "Asli (1x)": lagu tidak diubah, jadi pengaturan kecepatan & volume disembunyikan
+function syncSpeedOpts() {
+  $('#speedOpts').hidden = document.querySelector('input[name=speedMode]:checked').value === 'original';
+}
+document.querySelectorAll('input[name=speedMode]').forEach((r) => r.addEventListener('change', syncSpeedOpts));
+syncSpeedOpts();
+
 const factor = $('#factor');
 const gain = $('#gainDb');
 factor.addEventListener('input', () => { $('#factorVal').textContent = `${factor.value}x`; });
@@ -118,7 +125,7 @@ function renderJobs(force = false) {
         <div class="job-head">
           <div>
             <div class="job-title">${esc(j.displayName)}</div>
-            <div class="job-sub">${esc(j.originalName)} · ${esc(j.options.factor)}x ${esc(j.options.speedMode)} · ${esc(fmtDate(j.createdAt))}${isAdmin ? ` · ${esc(j.owner)}` : ''}</div>
+            <div class="job-sub">${esc(j.originalName)} · ${j.options.speedMode === 'original' ? esc(t('up.mode.original')) : `${esc(j.options.factor)}x ${esc(j.options.speedMode)}`} · ${esc(fmtDate(j.createdAt))}${isAdmin ? ` · ${esc(j.owner)}` : ''}</div>
           </div>
           <span class="badge ${cls}">${esc(t(`st.${j.status}`))}</span>
         </div>

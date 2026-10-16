@@ -7,6 +7,7 @@ const config = require('./src/config');
 const auth = require('./src/auth');
 const jobs = require('./src/jobs');
 const roblox = require('./src/roblox');
+const { mimeOf } = require('./src/audio');
 
 const app = express();
 app.set('trust proxy', process.env.TRUST_PROXY === 'true');
@@ -101,11 +102,10 @@ app.post('/api/upload', auth.requireUser, upload.array('files', 20), (req, res) 
   const cleanup = () => files.forEach((f) => fs.rm(f.path, { force: true }, () => {}));
   if (!files.length) throw auth.httpError(400, 'Pilih minimal satu file audio.');
 
-  const options = {
-    speedMode: req.body.speedMode === 'tempo' ? 'tempo' : 'speed',
-    factor: Number(req.body.factor || 2),
-    gainDb: Number(req.body.gainDb || 0),
-  };
+  const speedMode = ['speed', 'tempo'].includes(req.body.speedMode) ? req.body.speedMode : 'original';
+  const options = speedMode === 'original'
+    ? { speedMode, factor: 1, gainDb: 0 }
+    : { speedMode, factor: Number(req.body.factor || 2), gainDb: Number(req.body.gainDb || 0) };
   if (!(options.factor >= 0.5 && options.factor <= 4)) { cleanup(); throw auth.httpError(400, 'Faktor kecepatan harus 0.5 - 4.'); }
   if (!(options.gainDb >= -20 && options.gainDb <= 20)) { cleanup(); throw auth.httpError(400, 'Gain harus -20 s/d 20 dB.'); }
 
@@ -143,7 +143,7 @@ app.delete('/api/jobs/:id', auth.requireUser, (req, res) => {
 app.get('/api/jobs/:id/audio', auth.requireUser, (req, res) => {
   const job = jobs.find(req.user, req.params.id);
   if (!job.processedFile || !fs.existsSync(job.processedFile)) throw auth.httpError(404, 'File audio tidak tersedia.');
-  res.type('audio/mpeg').sendFile(job.processedFile);
+  res.type(mimeOf(job.processedFile)).sendFile(job.processedFile);
 });
 
 // ------------------------------------------------------------------ admin: pelanggan

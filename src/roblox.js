@@ -2,6 +2,7 @@ const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
 const config = require('./config');
+const { mimeOf } = require('./audio');
 
 class RobloxError extends Error {
   constructor(message, status, body) {
@@ -67,7 +68,7 @@ async function uploadAudio({ apiKey, filePath, displayName, description, creator
   const buf = await fs.promises.readFile(filePath);
   const form = new FormData();
   form.append('request', JSON.stringify(request_));
-  form.append('fileContent', new Blob([buf], { type: 'audio/mpeg' }), path.basename(filePath));
+  form.append('fileContent', new Blob([buf], { type: mimeOf(filePath) }), path.basename(filePath));
   return request('POST', '/assets/v1/assets', { apiKey, body: form });
 }
 

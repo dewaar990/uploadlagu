@@ -26,7 +26,11 @@ const mockServer = http.createServer((req, res) => {
     if (req.method === 'POST' && url.pathname === '/assets/v1/assets') {
       const text = body.toString('latin1');
       const reqJson = JSON.parse(text.match(/name="request"\r\n\r\n(.*?)\r\n--/s)[1]);
-      const n = mock.uploads.push({ request: reqJson, size: body.length, hasFile: text.includes('name="fileContent"') && text.includes('audio/mpeg') });
+      const filePart = body.indexOf('name="fileContent"');
+      const headerEnd = body.indexOf('\r\n\r\n', filePart) + 4;
+      const fileEnd = body.indexOf('\r\n--', headerEnd);
+      const contentType = (text.slice(filePart, headerEnd).match(/Content-Type: ([^\r\n]+)/i) || [])[1];
+      const n = mock.uploads.push({ request: reqJson, size: body.length, contentType, file: body.subarray(headerEnd, fileEnd), hasFile: filePart > 0 && contentType === 'audio/mpeg' });
       return send(200, { path: `operations/op${n}`, operationId: `op${n}`, done: false });
     }
     let m;
@@ -217,4 +221,46 @@ test('filter speed/tempo', () => {
   assert.equal(buildFilter({ speedMode: 'tempo', factor: 2 }), 'atempo=2');
   assert.equal(buildFilter({ speedMode: 'tempo', factor: 3 }), 'atempo=2,atempo=1.5');
   assert.throws(() => buildFilter({ factor: 10 }));
+});
+
+test('mode asli (1x): file dikirim ke Roblox tanpa diubah sedikit pun', async () => {
+  const admin = client();
+  await admin('POST', '/api/auth/login', { id: 'admin', password: 'admin-pass' });
+  await admin('PUT', '/api/settings', { apiKey: API_KEY, creatorType: 'group', creatorId: '77', universeId: '999' });
+
+  const tone = path.join(tmp, 'asli.wav');
+  makeTone(tone, 3);
+  const original = fs.readFileSync(tone);
+  const fd = new FormData();
+  fd.append('files', new Blob([original]), 'asli.wav');
+  fd.append('names', JSON.stringify(['Lagu Asli']));
+  fd.append('speedMode', 'original');
+  fd.append('factor', '2'); // harus diabaikan pada mode asli
+  fd.append('gainDb', '6'); // harus diabaikan pada mode asli
+  const up = await admin('POST', '/api/upload', fd, true);
+  assert.equal(up.status, 200, JSON.stringify(up.data));
+  assert.deepEqual(up.data.jobs[0].options, { speedMode: 'original', factor: 1, gainDb: 0 });
+  const id = up.data.jobs[0].id;
+
+  const job = await waitFor(async () => {
+    const { data } = await admin('GET', '/api/jobs');
+    const j = data.jobs.find((x) => x.id === id);
+    return j.status === 'done' ? j : null;
+  });
+  assert.ok(Math.abs(job.duration - 3) < 0.05, `durasi tetap ${job.duration}`);
+
+  const sent = mock.uploads.find((u) => u.request.displayName === 'Lagu Asli');
+  assert.equal(sent.contentType, 'audio/wav');
+  assert.deepEqual(sent.request.creationContext, { creator: { groupId: '77' } });
+  assert.ok(Buffer.compare(sent.file, original) === 0, 'isi file yang diupload identik dengan file asli');
+});
+
+test('mode asli: format yang tidak diterima Roblox (m4a) hanya dikonversi ke MP3, durasi sama', async () => {
+  const { processAudio, mimeOf } = require('../src/audio');
+  const src = path.join(tmp, 'lagu.m4a');
+  execFileSync('ffmpeg', ['-hide_banner', '-loglevel', 'error', '-y', '-f', 'lavfi', '-i', 'sine=frequency=440:duration=3', '-c:a', 'aac', src]);
+  const out = await processAudio(src, path.join(tmp, 'm4a-out'), { speedMode: 'original' });
+  assert.equal(out.converted, true);
+  assert.equal(mimeOf(out.file), 'audio/mpeg');
+  assert.ok(Math.abs(out.duration - 3) < 0.1, `durasi ${out.duration}`);
 });

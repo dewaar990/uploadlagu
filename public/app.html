@@ -51,11 +51,12 @@
           <div>
             <div class="label" style="margin-bottom:6px" data-i18n="up.mode">Mode kecepatan</div>
             <div class="segmented">
-              <label><input type="radio" name="speedMode" value="speed" checked><span class="opt"><b data-i18n="up.mode.speed"></b><span data-i18n="up.mode.speed.d"></span></span></label>
+              <label class="full"><input type="radio" name="speedMode" value="original" checked><span class="opt"><b data-i18n="up.mode.original"></b><span data-i18n="up.mode.original.d"></span></span></label>
+              <label><input type="radio" name="speedMode" value="speed"><span class="opt"><b data-i18n="up.mode.speed"></b><span data-i18n="up.mode.speed.d"></span></span></label>
               <label><input type="radio" name="speedMode" value="tempo"><span class="opt"><b data-i18n="up.mode.tempo"></b><span data-i18n="up.mode.tempo.d"></span></span></label>
             </div>
           </div>
-          <div>
+          <div id="speedOpts" hidden>
             <div class="field">
               <label for="factor"><span data-i18n="up.factor">Kecepatan</span>: <b id="factorVal" style="color:var(--accent)">2x</b></label>
               <input type="range" id="factor" name="factor" min="1" max="3" step="0.25" value="2">

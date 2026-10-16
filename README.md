@@ -3,7 +3,7 @@
 Web untuk:
 
 1. **Upload lagu** (MP3, WAV, OGG, FLAC, M4A, dll. — bisa banyak sekaligus)
-2. **Edit jadi speed 2x** dengan ffmpeg (mode *Speed*: nada ikut naik, atau *Tempo*: nada tetap; faktor & volume bisa diatur)
+2. **Mode Asli (1x, default)**: lagu diupload apa adanya tanpa diubah (MP3/OGG/WAV/FLAC dikirim byte-per-byte; format lain hanya dikonversi ke MP3). Opsional: mode *Speed* / *Tempo* dengan ffmpeg
 3. **Upload ke Roblox (Creator Hub)** lewat **Open Cloud API key**
 4. **Verifikasi moderasi**: status dicek terus sampai Roblox menyatakan *Approved* atau *Rejected*
 5. **SoundId otomatis disimpan ke DataStore `songiddeerizcorp`** (juga lewat API key) — hanya jika lagu **Approved**

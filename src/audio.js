@@ -1,5 +1,14 @@
 const { spawn } = require('child_process');
+const fs = require('fs');
+const path = require('path');
 const config = require('./config');
+
+// Format yang diterima Roblox apa adanya (tanpa konversi)
+const ROBLOX_FORMATS = { '.mp3': 'audio/mpeg', '.ogg': 'audio/ogg', '.wav': 'audio/wav', '.flac': 'audio/flac' };
+
+function mimeOf(file) {
+  return ROBLOX_FORMATS[path.extname(file).toLowerCase()] || 'application/octet-stream';
+}
 
 /**
  * Membuat filter ffmpeg untuk mempercepat audio.
@@ -47,9 +56,37 @@ async function probeDuration(file) {
   return d;
 }
 
-/** Ubah file menjadi MP3 dengan kecepatan baru. Mengembalikan durasi (detik). */
-async function processAudio(input, output, opts) {
+function checkDuration(duration) {
+  if (duration > config.audio.maxSeconds) {
+    throw new Error(`Durasi ${Math.round(duration)} detik, melebihi batas ${config.audio.maxSeconds} detik.`);
+  }
+}
+
+/**
+ * Mode "original" (1x): lagu tidak diubah sama sekali. File MP3/OGG/WAV/FLAC dikirim apa adanya;
+ * format lain (M4A, AAC, dll.) atau file > batas ukuran Roblox hanya dikonversi ke MP3 kualitas tertinggi,
+ * tanpa mengubah kecepatan, nada, maupun volume.
+ */
+async function keepOriginal(input, outBase) {
+  const duration = await probeDuration(input);
+  checkDuration(duration);
+  const ext = path.extname(input).toLowerCase();
+  const { size } = await fs.promises.stat(input);
+  if (ROBLOX_FORMATS[ext] && size <= config.audio.robloxMaxMb * 1024 * 1024) {
+    const file = outBase + ext;
+    await fs.promises.copyFile(input, file);
+    return { file, duration, converted: false };
+  }
+  const file = `${outBase}.mp3`;
+  await run(config.audio.ffmpeg, ['-hide_banner', '-y', '-i', input, '-vn', '-c:a', 'libmp3lame', '-q:a', '0', file]);
+  return { file, duration, converted: true };
+}
+
+/** Proses audio sesuai mode. Mengembalikan { file, duration, converted }. */
+async function processAudio(input, outBase, opts) {
+  if (opts.speedMode === 'original') return keepOriginal(input, outBase);
   const filter = buildFilter(opts);
+  const output = `${outBase}.mp3`;
   await run(config.audio.ffmpeg, [
     '-hide_banner', '-y', '-i', input,
     '-vn', '-map_metadata', '-1',
@@ -59,10 +96,8 @@ async function processAudio(input, output, opts) {
     output,
   ]);
   const duration = await probeDuration(output);
-  if (duration > config.audio.maxSeconds) {
-    throw new Error(`Durasi setelah diproses ${Math.round(duration)} detik, melebihi batas ${config.audio.maxSeconds} detik.`);
-  }
-  return duration;
+  checkDuration(duration);
+  return { file: output, duration, converted: true };
 }
 
-module.exports = { buildFilter, processAudio, probeDuration };
+module.exports = { buildFilter, processAudio, probeDuration, mimeOf };

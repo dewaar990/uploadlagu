@@ -112,12 +112,12 @@ async function processAndUpload(job) {
     if (!job.inputFile || !fs.existsSync(job.inputFile)) throw new Error('File asli sudah tidak ada. Silakan upload ulang.');
     update(job, { status: 'processing' });
     setStep(job, 'process', 'active');
-    const out = path.join(config.processedDir, `${job.id}.mp3`);
-    const duration = await processAudio(job.inputFile, out, job.options);
+    const { file, duration, converted } = await processAudio(job.inputFile, path.join(config.processedDir, job.id), job.options);
     fs.rm(job.inputFile, { force: true }, () => {});
-    update(job, { processedFile: out, inputFile: null, duration });
+    update(job, { processedFile: file, inputFile: null, duration });
     setStep(job, 'process', 'done');
-    log(job, `Audio diproses (${labelSpeed(job.options)}), durasi ${duration.toFixed(1)} detik.`);
+    const note = job.options.speedMode === 'original' && converted ? ', dikonversi ke MP3 karena format/ukuran' : '';
+    log(job, `Audio siap (${labelSpeed(job.options)}${note}), durasi ${duration.toFixed(1)} detik.`);
   }
 
   if (!job.assetId) {
@@ -141,6 +141,7 @@ async function processAndUpload(job) {
 }
 
 function labelSpeed(o) {
+  if (o.speedMode === 'original') return 'asli 1x, tanpa diubah';
   return `${o.factor}x ${o.speedMode === 'tempo' ? 'tempo (nada tetap)' : 'speed (nada naik)'}${Number(o.gainDb) ? `, gain ${o.gainDb} dB` : ''}`;
 }
 

@@ -248,6 +248,7 @@ button, input, select { font: inherit; color: inherit; }
 
 .segmented { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .segmented label { cursor: pointer; }
+.segmented label.full { grid-column: 1 / -1; }
 .segmented input { position: absolute; opacity: 0; pointer-events: none; }
 .segmented .opt { display: block; height: 100%; padding: 12px 14px; border-radius: 14px; border: 1px solid rgba(255,255,255,.1); background: rgba(255,255,255,.04); transition: border-color .2s, background .2s, box-shadow .2s; }
 .segmented .opt b { display: block; font-size: 14px; }

@@ -54,6 +54,8 @@ module.exports = {
     bitrate: process.env.AUDIO_BITRATE || '192k',
     maxSeconds: num('MAX_AUDIO_SECONDS', 420),
     maxUploadMb: num('MAX_UPLOAD_MB', 100),
+    // batas ukuran file audio Roblox; file lebih besar dikonversi ke MP3
+    robloxMaxMb: num('ROBLOX_MAX_AUDIO_MB', 20),
   },
 
   poll: {
